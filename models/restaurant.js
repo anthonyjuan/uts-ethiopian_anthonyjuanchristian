@@ -2,9 +2,9 @@ const monggo = require('mongoose');
 const Schema = monggo.Schema;
 
 const restaurantSchema = new Schema({
-  name: String,
-  owner: String,
-  address: String,
+  name: {type: String, unique:true, required:true},
+  owner: {type: String, required:true},
+  address: {type: String, required:true},
   open_status: Boolean,
   menu: [{type:Schema.Types.ObjectId, ref:'Food'}]
 })
