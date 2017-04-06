@@ -2,22 +2,26 @@ const Restaurant = require('../models/restaurant')
 
 module.exports = {
   getData: (req, res) => {
-    Restaurant.find((err,results) => {
-      if (err) {
-        res.send(err.message)
-      } else {
-        res.send(results)
-      }
-    })
+    Restaurant.find()
+              .populate('menu')
+              .exec((err,results) => {
+                if (err) {
+                  res.send(err.message)
+                } else {
+                  res.send(results)
+                }
+              })
   },
   getOneData: (req,res) => {
-    Restaurant.findOne({_id:req.params.id},(err,result) =>{
-      if(err) {
-        res.send(err.message)
-      } else {
-        res.send(result)
-      }
-    })
+    Restaurant.findOne({_id:req.params.id})
+              .populate('menu')
+              .exec((err,result) =>{
+                if(err) {
+                  res.send(err.message)
+                } else {
+                  res.send(result)
+                }
+              })
   },
   createData: (req,res) => {
     console.log(req.body);
@@ -56,6 +60,29 @@ module.exports = {
         res.send(err)
       } else {
         res.send(success)
+      }
+    })
+  },
+  insertMenu:(req, res) => {
+    Restaurant.findOne({_id:req.body.restaurant}, (err,result) => {
+      if(err) {
+        res.send(err)
+      } else if (result) {
+        console.log('result ada');
+        Restaurant.findByIdAndUpdate(
+          result._id,
+          {$push: {menu: req.body.food}},
+          {safe: true, upsert: true, new : true},
+          (err, success) => {
+            if(err) {
+              res.send(err)
+            } else {
+              res.send('data berhasil diupdate')
+            }
+          }
+        )
+      } else {
+        res.send('restaurant tidak ditemukan');
       }
     })
   }

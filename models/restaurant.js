@@ -5,7 +5,8 @@ const restaurantSchema = new Schema({
   name: String,
   owner: String,
   address: String,
-  open_status: Boolean
+  open_status: Boolean,
+  menu: [{type:Schema.Types.ObjectId, ref:'Food'}]
 })
 
 const Restaurant = monggo.model('Restaurant', restaurantSchema);
